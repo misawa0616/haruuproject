@@ -1,0 +1,67 @@
+div {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+html {
+  font-size: 20px;
+}
+label {
+  cursor: default;
+}
+input {
+  position: relative;
+  line-height: 1.4;
+  display: inline-block;
+  padding: 0.1rem 0.12rem;
+  text-indent: 0;
+  border: 2px #aaa solid;
+  border-radius: 4px;
+  font-family: inherit;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-size:20px;
+}
+.form-control {
+  line-height: 30px;
+}
+.common-block {
+  margin-bottom: 0.4rem;
+}
+.-error {
+  background-color: #fff5f5;
+  border-color: #ff8383;
+}
+.err-msg {
+  color: #d41414;
+  font-size: 10px;
+}
+.wrapp, .wrapp-pc-only {
+  margin: auto;
+  width: 35.4rem;
+  box-sizing: border-box;
+}
+.wrapp:after, .wrapp-pc-only:after {
+  content: '.';
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.password-table-block table td .row {
+    text-align: left;
+}
+.common-table-block table th {
+  padding: 0 3rem 0 0;
+  width: 40%;
+  vertical-align: middle;
+  border-left: none;
+  text-align: left;
+  color: #000;
+  font-size: 1rem;
+  font-weight: normal;
+  display: table-cell;
+}

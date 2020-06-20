@@ -1,0 +1,77 @@
+{% extends "customers/base.html" %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% block content %}
+<div id="app">
+    <form action="" method="post">
+        <div class="wrapp-pc-only">
+            <div class="common-block">
+                <div class="common-table-block password-table-block color-none">
+                    <table>
+                        <tr>
+                            <th>
+                                {{ form.email.label }}
+                                [[ email ]]
+                            </th>
+                            <td>
+                                <div class="row">
+                                    {{ form.initial.email }}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br><br><br>
+                    <table>
+                        <tbody>
+                        {% csrf_token %}
+                        <tr>
+                            <th>
+                                {{ form.after_change_email.label }}
+                            </th>
+                            <td>
+                                <div class="row">
+                                    <div class="err-msg">{{
+                                        form.after_change_email.errors.as_text
+                                        }}
+                                    </div>
+                                    {{ form.after_change_email }}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                {{ form.confirm_after_change_email.label }}
+                            </th>
+                            <td>
+                                <div class="row">
+                                    <div class="err-msg">{{
+                                        form.confirm_after_change_email.errors.as_text
+                                        }}
+                                    </div>
+                                    {{ form.confirm_after_change_email }}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                {{ form.password.label }}
+                            </th>
+                            <td>
+                                <div class="row">
+                                    <div class="err-msg">{{
+                                        form.password.errors.as_text }}
+                                    </div>
+                                    {{ form.password }}
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <input type="submit">
+        </div>
+    </form>
+</div>
+{% render_bundle 'app' %}
+{% endblock %}
