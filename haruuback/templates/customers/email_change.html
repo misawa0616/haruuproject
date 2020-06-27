@@ -1,0 +1,105 @@
+{% extends "customers/base.html" %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% block content %}
+  <section class="section-area">
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="wrapp-pc-only">
+        <div class="common-block">
+          <div class="common-table-block color-none">
+            <table>
+              <tr>
+                <th>
+                  {{ form.before_change_email.label }}
+                </th>
+                <td>
+                  <div class="row-txt">
+                    {{ form.initial.before_change_email }}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  {{ form.after_change_email.label }}
+                </th>
+                <td>
+                  <div class="row-input">
+                    <template v-if="after_change_email_error">
+                      <div class="err-msg">
+                        [[ after_change_email_error ]]
+                      </div>
+                    </template>
+                    {{ form.after_change_email }}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  {{ form.after_change_email_confirm.label }}
+                </th>
+                <td>
+                  <div class="row-input">
+                    <template v-if="after_change_email_confirm_error">
+                      <div class="err-msg">
+                        [[ after_change_email_confirm_error ]]
+                      </div>
+                    </template>
+                    {{ form.after_change_email_confirm }}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  {{ form.password.label }}
+                </th>
+                <td>
+                  <div class="row-input">
+                    <template v-if="password_error">
+                      <div class="err-msg">
+                        [[ password_error ]]
+                      </div>
+                    </template>
+                    {{ form.password }}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <ul class="side-page-link-list">
+          <li class="return">
+            <button class="btn">戻る</button>
+          </li>
+          <li class="next">
+            <button class="btn">送信する</button>
+          </li>
+        </ul>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+<script>
+  var initial_after_change_email = "{{ form.data.after_change_email }}";
+  var initial_after_change_email_confirm =
+    "{{ form.data.after_change_email_confirm }}";
+  var initial_password = "{{ form.data.password }}";
+  var initial_after_change_email_error =
+    "{% for error in form.errors.after_change_email %}{{ error }}{% endfor %}";
+  var initial_after_change_email_confirm_error =
+    "{% for error in form.errors.after_change_email_confirm %}{{ error }}{% endfor %}";
+  var initial_password_error =
+    "{% for error in form.errors.password %}{{ error }}{% endfor %}";
+  var initial_message =
+    "{% for error in form.non_field_errors %}{{ error }}{% endfor %}";
+</script>
+
+{% if DEBUG %}
+<script type="module" src="{% static 'js/email_change.js' %}"></script>
+{% else %}
+<script type="module" src="{% static 'js/email_change.js' %}"></script>
+{% endif %}
+{% endblock %}

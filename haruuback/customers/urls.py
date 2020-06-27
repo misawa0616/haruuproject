@@ -20,7 +20,7 @@ from customers import views
 app_name = "customers"
 
 urlpatterns = [
-    path('email-change', views.EmailChangeCheckView.as_view(), name='email_change'),
+    path('email_change', views.EmailChangeCheckView.as_view(), name='email_change'),
     path('top', views.TopView.as_view(), name='top'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),

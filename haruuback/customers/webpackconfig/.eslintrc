@@ -1,0 +1,12 @@
+{
+  "env": {
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "globals": {},
+  "rules": {
+    "no-unused-vars": "off",
+    "no-undef": "off"
+  }
+}

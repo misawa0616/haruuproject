@@ -3,66 +3,99 @@ from accounts.models import HaruuUser
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
 
+HARUUCODE0000 = "エラーがあります。"
+HARUUCODE0001 = "この項目は必須です。"
 
 class EmailChangeCheckForm(forms.Form):
     """メールアドレス変更フォーム"""
 
-    email = forms.CharField(initial='a',
-                            label='現在のメールアドレス',
-                            max_length=128,
-                            required=False,
-                            widget=forms.TextInput(
-                                attrs={'v-model': 'special'})
-                            )
-    after_change_email = forms.CharField(label='変更後メールアドレス',
+    before_change_email = forms.CharField(label='現在のメールアドレス',
+                                          max_length=128,
+                                          required=False,
+                                          )
+    after_change_email = forms.CharField(label='変更後のメールアドレス',
                                          max_length=128,
-                                         required=False)
-    confirm_after_change_email = forms.CharField(label='変更後メールアドレス(確認用)',
+                                         required=False,
+                                         widget=forms.TextInput(
+                                             attrs={
+                                                 'v-model': 'after_change_email',
+                                                 'v-bind:class': '{ error: after_change_email_error }'})
+                                         )
+    after_change_email_confirm = forms.CharField(label='変更後のメールアドレス(確認用)',
                                                  max_length=128,
-                                                 required=False)
+                                                 required=False,
+                                                 widget=forms.TextInput(
+                                                     attrs={
+                                                         'v-model': 'after_change_email_confirm',
+                                                         'v-bind:class': '{ error: after_change_email_confirm_error }'})
+                                                 )
     password = forms.CharField(label='パスワード',
                                max_length=128,
-                               required=False)
+                               required=False,
+                               widget=forms.TextInput(
+                                   attrs={
+                                       'v-model': 'password',
+                                       'v-bind:class': '{ error: password_error }'})
+                               )
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        for k, v in self.fields.items():
-            v.widget.attrs['class'] = 'form-control'
-            v.widget.attrs["v-model"] = k
 
-    def clean_after_change_email(self):
-        after_change_email = self.cleaned_data.get('after_change_email')
+    def validate_required(self, after_change_email, after_change_email_confirm,
+                          password):
         if not after_change_email:
-            raise forms.ValidationError('この項目は必須です。')
-        HaruuUser.objects.filter(email=after_change_email)
-        return after_change_email
+            self.add_error('after_change_email', HARUUCODE0001)
+        if not after_change_email_confirm:
+            self.add_error('after_change_email_confirm', HARUUCODE0001)
+        if not str.strip(password):
+            self.add_error('password', HARUUCODE0001)
+        if self.errors:
+            raise forms.ValidationError(HARUUCODE0000)
 
-    def clean_confirm_after_change_email(self):
-        confirm_after_change_email = self.cleaned_data.get(
-            'confirm_after_change_email')
-        if not confirm_after_change_email:
+    def validate_format(self):
+        after_change_email_confirm = self.cleaned_data.get(
+            'after_change_email_confirm')
+        if not after_change_email_confirm:
             raise forms.ValidationError('この項目は必須です。')
-        HaruuUser.objects.filter(email=confirm_after_change_email)
-        return confirm_after_change_email
+        return after_change_email_confirm
 
-    def clean_password(self):
+    def validate_match(self):
         password = self.cleaned_data.get(
             'password')
         if not password:
             raise forms.ValidationError('この項目は必須です。')
-        haruu_user_model = HaruuUser.objects.filter(email=password)
         return password
 
-    def clean_email(self):
-        email = self.cleaned_data.get(
-            'email')
-        if not email:
+    def validate_match(self):
+        password = self.cleaned_data.get(
+            'password')
+        if not password:
             raise forms.ValidationError('この項目は必須です。')
-        return email
+        return password
+
+    def validate_duplicate(self):
+        password = self.cleaned_data.get(
+            'password')
+        if not password:
+            raise forms.ValidationError('この項目は必須です。')
+        return password
+
+    def validate_authenticate(self):
+        password = self.cleaned_data.get(
+            'password')
+        if not password:
+            raise forms.ValidationError('この項目は必須です。')
+        return password
 
     def clean(self):
-        raise Exception("例外が発生しました")
-        return after_change_email
+        after_change_email = self.cleaned_data.get('after_change_email')
+        after_change_email_confirm = self.cleaned_data.get(
+            'after_change_email_confirm')
+        password = self.cleaned_data.get('password')
+        self.validate_required(after_change_email, after_change_email_confirm,
+                               password)
+        return self.cleaned_data
 
 
 class CustomLoginForm(AuthenticationForm):

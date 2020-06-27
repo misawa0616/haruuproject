@@ -9,23 +9,17 @@ from .forms import CustomLoginForm
 
 class EmailChangeCheckView(generic.FormView):
     """メールアドレスの変更"""
-    template_name = 'customers/email_change_form.html'
+    template_name = 'customers/email_change.html'
     form_class = EmailChangeCheckForm
 
     def get_initial(self):
-        initial = {'email': self.request.user.email}
+        initial = {'before_change_email': self.request.user.email}
         return initial.copy()
 
     def form_valid(self, form):
-        return render(self.request, 'customers/email_change_form.html', {
+        return render(self.request, 'customers/email_change.html', {
             'form': form,
         })
-
-    def form_invalid(self, form):
-        for fields in form:
-            if fields.errors:
-               fields.field.widget.attrs['class'] = '-error'
-        return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -35,6 +29,11 @@ class EmailChangeCheckView(generic.FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
 class CustomLoginView(LoginView):

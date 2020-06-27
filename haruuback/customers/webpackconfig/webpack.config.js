@@ -1,8 +1,9 @@
 var path = require("path");
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
-  entry: { app: "../../static/js/app.js" },
+  entry: { email_change: "../../static/js/email_change.js" },
   output: {
     path: path.resolve(__dirname, "../../static/webpack/"),
     filename: "[name]-[hash].js",
@@ -12,12 +13,20 @@ module.exports = {
       {
         test: /\.js/,
         exclude: "/node_modules",
-        use: ["babel-loader"],
+        use: [
+          "babel-loader",
+          {
+            loader: "eslint-loader",
+            options: {
+              configFile: "./.eslintrc",
+            },
+          },
+        ],
       },
       {
         test: /\.css/,
         use: [
-          "style-loader",
+          MiniCssExtractPlugin.loader,
           "css-loader",
           {
             loader: "postcss-loader",
@@ -31,5 +40,12 @@ module.exports = {
       },
     ],
   },
-  plugins: [new BundleTracker({ filename: "./webpack-stats.json" })],
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name]-[hash].css",
+    }),
+    new BundleTracker({
+      filename: "./webpack-stats.json",
+    }),
+  ],
 };
