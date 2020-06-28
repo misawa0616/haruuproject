@@ -1,15 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-from .forms import EmailChangeCheckForm
+from .forms import EmailChangeCheckForm, CustomLoginForm, EmailChangeForm
 from django.shortcuts import render
 from accounts.models import HaruuUser
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView, LogoutView
-from .forms import CustomLoginForm
+from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.contrib.auth import get_user_model
 
 
 class EmailChangeCheckView(generic.FormView):
-    """メールアドレスの変更"""
+    """メールアドレスの変更チェック"""
     template_name = 'customers/email_change.html'
+    success_url = reverse_lazy('customers:email_change_confirm')
     form_class = EmailChangeCheckForm
 
     def get_initial(self):
@@ -17,23 +20,42 @@ class EmailChangeCheckView(generic.FormView):
         return initial.copy()
 
     def form_valid(self, form):
-        return render(self.request, 'customers/email_change.html', {
-            'form': form,
-        })
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        form.data.email = self.request.user.email
-        form_valid = form.is_valid()
-        if form_valid == 1:
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+        self.request.session['after_change_email'] = form.cleaned_data.get(
+            'after_change_email')
+        return super().form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+
+class EmailChangeView(generic.FormView):
+    """メールアドレスの変更"""
+    template_name = 'customers/email_change_confirm.html'
+    form_class = EmailChangeForm
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.session.get('after_change_email'):
+            return HttpResponseRedirect(reverse('customers:email_change'))
+        return super().get(request, *args, **kwargs)
+
+    def get_initial(self):
+        if self.request.session.get('after_change_email'):
+            self.initial = {'after_change_email': self.request.session.get(
+                'after_change_email')}
+        return self.initial.copy()
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.initial.get('after_change_email') == self.request.session.get('after_change_email'):
+            user_model = get_user_model().objects.get(email=self.request.user.email)
+            user_model.email = self.request.session.get('after_change_email')
+            user_model.save()
+            del request.session['after_change_email']
+            return HttpResponseRedirect(reverse('customers:email_change_complete'))
+        else:
+            return HttpResponseBadRequest
 
 
 class CustomLoginView(LoginView):

@@ -19,10 +19,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('customers/', include('customers.urls')),
 ]
 
 urlpatterns += [
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/accounts/', include('accounts.urls')),
-    url(r'^customers/', include('customers.urls'))
 ]

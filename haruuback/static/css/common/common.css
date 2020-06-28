@@ -36,7 +36,7 @@ input {
   font-size: 20px;
   width: 20rem;
 }
-button {
+button, a {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -46,6 +46,10 @@ button {
   background: none;
   outline: 0;
   cursor: pointer;
+  text-decoration: none;
+}
+ul {
+  padding-inline-start: 0px;
 }
 div,
 h3,
@@ -198,4 +202,7 @@ input.error {
   height: 0;
   clear: both;
   visibility: hidden;
+}
+[v-cloak] {
+  display: none;
 }

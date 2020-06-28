@@ -1,0 +1,23 @@
+{% extends "customers/base.html" %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% block error_field %}
+{% endblock %}
+{% block main %}
+<div id="app">
+  <section class="section-area">
+    <div class="wrapp-pc-only">
+      <div class="common-block">
+        <div class="common-table-block color-none">
+          変更完了
+        </div>
+      </div>
+      <ul class="side-page-link-list">
+        <li class="next">
+          <a href={% url 'customers:email_change' %} class="btn">戻る</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+{% endblock %}

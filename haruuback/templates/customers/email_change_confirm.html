@@ -1,0 +1,40 @@
+{% extends "customers/base.html" %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% block error_field %}
+{% endblock %}
+{% block main %}
+<div id="app">
+  <section class="section-area">
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="wrapp-pc-only">
+        <div class="common-block">
+          <div class="common-table-block color-none">
+            <table>
+              <tr>
+                <th>
+                  {{form.after_change_email.label}}
+                </th>
+                <td>
+                  <div class="row-txt">
+                    {{form.initial.after_change_email}}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <ul class="side-page-link-list">
+          <li class="return">
+            <a href={% url 'customers:email_change' %} class="btn">戻る</a>
+          </li>
+          <li class="next">
+            <button class="btn">変更する</button>
+          </li>
+        </ul>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
