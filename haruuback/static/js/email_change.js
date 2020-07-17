@@ -13,9 +13,6 @@ var app = new Vue({
     message: initial_message,
   },
   beforeCreate: function () {
-    window.onpageshow = function () {
-      document.f1.reset();
-    };
     history.replaceState(null, document.getElementsByTagName('title')[0].innerHTML, null);
     window.addEventListener('popstate', function (e) {
       window.location.reload();

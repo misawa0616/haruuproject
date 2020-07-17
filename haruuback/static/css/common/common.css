@@ -203,6 +203,9 @@ input.error {
   clear: both;
   visibility: hidden;
 }
+.side-page-link-list li .btn:hover {
+  opacity: 0.5;
+}
 [v-cloak] {
   display: none;
 }
